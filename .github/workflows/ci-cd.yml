@@ -73,7 +73,6 @@ jobs:
           # Push the Docker image with the date tag
           docker push arunbabu101/edureka:latest
 
-      # Deploy to AWS EC2
       - name: Deploy to EC2
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
@@ -81,7 +80,15 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@13.60.42.127 << EOF
-            sudo docker pull arunbabu101/edureka:latest
-            sudo docker stop $(docker ps -q --filter ancestor=arunbabu101/edureka:latest)
-            sudo docker run -d -p 8000:8000 arunbabu101/edureka:latest
+            # Pull the latest image
+            docker pull arunbabu101/edureka:latest
+
+            # Stop the existing container if it exists
+            CONTAINER_ID=$(docker ps -q --filter ancestor=arunbabu101/edureka:latest)
+            if [ -n "$CONTAINER_ID" ]; then
+              docker stop "$CONTAINER_ID"
+            fi
+
+            # Run the new container
+            docker run -d -p 8000:8000 arunbabu101/edureka:latest
           EOF
