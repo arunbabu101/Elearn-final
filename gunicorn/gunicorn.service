@@ -7,6 +7,7 @@ After=network.target
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/Elearn-final
+Environment="PATH=/home/ubuntu/Elearn-final/venv/bin"
 ExecStart=/home/ubuntu/Elearn-final/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
