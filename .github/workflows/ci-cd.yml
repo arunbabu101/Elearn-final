@@ -83,12 +83,16 @@ jobs:
             # Pull the latest image
             docker pull arunbabu101/edureka:latest
 
-            # Stop the existing container if it exists
-            CONTAINER_ID=$(docker ps -q --filter ancestor=arunbabu101/edureka:latest)
+            # Stop and remove any container using port 8000
+            CONTAINER_ID=$(sudo lsof -t -i:8000)
             if [ -n "$CONTAINER_ID" ]; then
-              docker stop "$CONTAINER_ID"
+              echo "Stopping container using port 8000: $CONTAINER_ID"
+              sudo docker stop "$CONTAINER_ID"
+              sudo docker rm "$CONTAINER_ID"
             fi
 
             # Run the new container
-            docker run -d -p 8000:8000 arunbabu101/edureka:latest
+            echo "Starting new container on port 8000"
+            sudo docker run -d -p 8000:8000 arunbabu101/edureka:latest
           EOF
+
