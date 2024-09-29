@@ -1,13 +1,15 @@
 [Unit]
 Description=gunicorn daemon
-Requires=gunicorn.socket
 After=network.target
+
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/Elearn
-ExecStart=/home/ubuntu/env/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/Elearn/edureka/edureka.sock edureka.wsgi:application
-
-       
+WorkingDirectory=/home/ubuntu/Elearn-final
+ExecStart=/home/ubuntu/Elearn-final/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind 0.0.0.0:8000 \
+          core.wsgi:application
 [Install]
 WantedBy=multi-user.target
