@@ -75,7 +75,7 @@ jobs:
 
       # Deploy to AWS EC2
       - name: Deploy to EC2
-         env:
+        env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           echo "$EC2_SSH_KEY" > private_key.pem
