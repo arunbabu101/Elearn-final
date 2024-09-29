@@ -1,0 +1,56 @@
+{% block content %}
+<style>
+    /* Reset some basic styles */
+body, h2, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Container styling */
+.container {
+    max-width: 600px; /* Set a maximum width for the container */
+    margin: 100px auto; /* Center the container */
+    padding: 30px; /* Padding around the container */
+    background-color: #ffffff; /* White background for content area */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center; /* Center the text */
+}
+
+/* Heading styles */
+h2 {
+    font-size: 2em; /* Large font size for the heading */
+    color: #28a745; /* Green color for success messages */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+/* Paragraph styles */
+p {
+    font-size: 1.2em; /* Slightly larger font size for the paragraph */
+    margin-bottom: 30px; /* Space below the paragraph */
+    color: #495057; /* Darker secondary text color */
+}
+
+/* Link styling */
+a {
+    display: inline-block; /* Make the link a block element for spacing */
+    padding: 10px 20px; /* Padding around the link */
+    background-color: #007bff; /* Blue background for the button */
+    color: white; /* White text color */
+    border-radius: 5px; /* Rounded corners for the button */
+    text-decoration: none; /* Remove underline from link */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+a:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+</style>
+<div class="container">
+    <h2>Payment Successful!</h2>
+    <p>Your purchase has been completed successfully.</p>
+    <a href="{% url 'purchase_history' %}">View Your Purchases</a>
+</div>
+{% endblock %}

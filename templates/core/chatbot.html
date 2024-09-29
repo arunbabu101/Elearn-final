@@ -1,0 +1,182 @@
+<div id="chat-container">
+    <h2 class="header">Ask Your Queries</h2>
+    <div id="chat-messages" class="chat-box">
+        <!-- Chat messages will appear here -->
+    </div>
+    <form id="chat-form" class="input-group">
+        {% csrf_token %}
+        <input type="text" id="user-input" name="user_input" class="input-field" placeholder="Type your message..." autofocus required>
+        <button type="submit" class="send-button">Send</button>
+    </form>
+    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+        <a class="nav-link" href="{% url 'home' %}">
+            <i class="fas fa-robot"></i> Back to home
+        </a>
+    </li>
+</div>
+
+<script>
+document.getElementById('chat-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var userInput = document.getElementById('user-input').value.trim();
+    var chatMessages = document.getElementById('chat-messages');
+    
+    if (userInput) {
+        // Add user message to chat with animation
+        chatMessages.innerHTML += '<div class="message user-message"><div class="message-content">' + userInput + '</div></div>';
+        
+        // Scroll to the bottom of the chat
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Clear input field
+        document.getElementById('user-input').value = '';
+
+        // Simulate typing indicator
+        chatMessages.innerHTML += '<div id="typing-indicator" class="message bot-message typing"><div class="message-content">...</div></div>';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Send request to server
+        fetch('{% url "chatbot" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: 'user_input=' + encodeURIComponent(userInput)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove typing indicator
+            document.getElementById('typing-indicator').remove();
+            
+            // Add bot response to chat with animation
+            chatMessages.innerHTML += '<div class="message bot-message"><div class="message-content">' + data.response + '</div></div>';
+            
+            // Scroll to the bottom of the chat
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+});
+</script>
+
+<style>
+    /* Dark Theme Chat container styling */
+    #chat-container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+        background-color: #1e1e1e;
+    }
+
+    /* Dark Theme Header styling */
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #fff;
+        font-family: 'Arial', sans-serif;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    /* Dark Theme Chat box styling */
+    .chat-box {
+        background: #2b2b2b;
+        border-radius: 10px;
+        border: 1px solid #444;
+        padding: 15px;
+        height: 400px;
+        overflow-y: auto;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Dark Theme Chat message styling */
+    .message {
+        display: flex;
+        margin-bottom: 10px;
+        animation: fade-in 0.5s ease-in-out;
+    }
+    .message-content {
+        padding: 10px 15px;
+        border-radius: 20px;
+        max-width: 70%;
+        word-wrap: break-word;
+        font-size: 16px;
+    }
+    .user-message .message-content {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+        border-radius: 20px 20px 0 20px;
+    }
+    .bot-message .message-content {
+        background-color: #3a3a3a;
+        color: #fff;
+        align-self: flex-start;
+        border-radius: 20px 20px 20px 0;
+    }
+
+    /* Dark Theme Typing indicator */
+    .typing {
+        font-weight: bold;
+        color: #888;
+        animation: blink 1s infinite;
+    }
+
+    /* Dark Theme Form and button styling */
+    .input-group {
+        display: flex;
+        margin-top: 20px;
+    }
+    .input-field {
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid #555;
+        background-color: #3a3a3a;
+        color: white;
+    }
+    .input-field::placeholder {
+        color: #888;
+    }
+
+    .send-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .send-button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Animations */
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    @keyframes fade-in {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scrollbar styling */
+    .chat-box::-webkit-scrollbar {
+        width: 8px;
+    }
+    .chat-box::-webkit-scrollbar-track {
+        background: #2b2b2b;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+        background-color: #444;
+        border-radius: 10px;
+    }
+</style>

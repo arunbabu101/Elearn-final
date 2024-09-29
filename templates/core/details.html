@@ -1,0 +1,231 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block body %}
+
+<!------ AWS Architect Certification Training-------->
+<section class="Certification">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12 no-padding">
+        <div class="Certification-1">
+          <ul class="brdcrm hidden-xs">
+            <li><a href="{% url 'home' %}">Home ></a></li>
+            <li><a href="#">{{posts.category.title}} ></a></li>
+            <li><a href="#">{{posts.title}} ></a></li>
+          </ul>
+          <div class="clp_title_top">
+            <span>Best Seller</span>
+            <h1>{{posts.title|title}}</h1>
+            <div class="live_cl">{{posts.badge}}</div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding hidden-xs hidden-sm cc_cursor"
+      >
+        <div class="cnt_box">
+          <span class="iconcall">
+            <i class="fa fa-phone" aria-hidden="true"></i>
+          </span>
+          <div class="cnt_info">
+            <span class="text">Have Queries? Ask us</span>
+            <a href="#">08040423753</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!----Video Panel--- -->
+<section class="container-flud video_info light_blue_back">
+  <div class="container clp-video-panel">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="panel-box">
+          <iframe
+            width="100%"
+            height="200"
+            src="{{posts.youtube}}"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 no-padding blurb_course">
+        <div class="blurb_bx">
+          <div style="text-align: justify">{{posts.desc|safe}}</div>
+        </div>
+        <div class="course_rating_user">
+          <span class="cour_reviewicons">
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+            <i class="fa fa-star" aria-hidden="true"></i>
+          </span>
+          <span class="lrner_cnt"> <span>87k</span> + satisfied learners </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!------AWS-Architect pb-5----------- -->
+<section class="AWS-Architect pb-5">
+  <div class="container">
+    <h2>{{posts.why_title}}</h2>
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 take_the_course_bx">
+        <div class="box_one_img">
+          <img src="{% static 'images/download.png' %}" />
+        </div>
+        <span> {{posts.why1|safe}}</span>
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 take_the_course_bx">
+        <div class="box_one_img">
+          <img src="{% static 'images/download.png' %}" />
+        </div>
+        <span> {{posts.why2|safe}}</span>
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 take_the_course_bx">
+        <div class="box_one_img">
+          <img src="{% static 'images/download.png' %}" />
+        </div>
+        <span> {{posts.why3|safe}}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!----clp_batch_table ------>
+
+{% if not videos %}
+{% else %}
+<section class="Program-Syllabus">
+  <div class="container">
+    <div
+      class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding box_heading_section mt-4"
+    >
+      <div class="box_title_bx no-padding">
+        <h2 class="title_box_heading">Videos</h2>
+      </div>
+    </div>
+    
+  </div>
+</section>
+{% endif %}
+<!------Accordion-------->
+<section class="Accordion-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="Accordion-main">
+          <div class="container mt-10">
+            <div class="col-md-12">
+              <h2 class="title_box_heading mb-4">{{posts.title}} Curriculum</h2>
+              <div
+                class="panel-group"
+                id="accordion2"
+                role="tablist"
+                aria-multiselectable="true"
+              >
+                {% for i in curriculam %}
+                <div class="panel panel-default">
+                  <div
+                    class="panel-heading"
+                    role="tab"
+                    id="{{forloop.counter}}"
+                  >
+                    <h4 class="panel-title">
+                      <a
+                        role="button"
+                        data-toggle="collapse"
+                        data-parent="#accordion2"
+                        href="#demo{{forloop.counter}}"
+                        aria-expanded="true"
+                        aria-controls="collapseOne"
+                      >
+                        {{i.title}}
+                      </a>
+                    </h4>
+                  </div>
+                  <div
+                    id="demo{{forloop.counter}}"
+                    class="panel-collapse collapse in"
+                    role="tabpanel"
+                    aria-labelledby="{{forloop.counter}}"
+                  >
+                    <div class="panel-body">
+                      <div class="mini-accordion">
+                        <p>{{i.content|safe}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {% comment %} {% endfor %} {% endcomment %} {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!----Enroll-Now------>
+
+<section class="Enroll-Now d-none d-lg-block">
+  <div class="container">
+    <div class="row">
+      <div
+        class="col-lg-12 col-md-12 col-sm-6 col-xs-6 open_frm_bx loaded"
+        style="background-image: url(images/download.jpg)"
+      >
+        <div class="title">Like the curriculum?Purchase Now</div>
+        <div class="sub">
+          Structure your learning through Edureka.
+        </div>
+        <form action="{% url 'enroll_now' category_slug=posts.category.slug slug=posts.slug %}" method="POST">
+          {% csrf_token %}
+          <div class="col-4 mt-2">
+            <button type="submit" class="btn btn-primary mt-4">ENROLL NOW</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</section>
+
+
+
+
+<!----Features------>
+<section class="Features">
+  <div class="container">
+    <h2 class="mb-4 mt-2">Features</h2>
+    <div class="row">
+      {% for i in features %}
+      <div class="col-md-4">
+        <div class="main-features">
+          <div class="Features-head">
+            <h4>
+              <i class="fa fa-desktop" aria-hidden="true"></i>&nbsp;
+              <span> {{i.title|safe}}</span>
+            </h4>
+          </div>
+          <div class="Features-head">
+            <article>{{i.content|safe}}</article>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+
+{% endblock body %}

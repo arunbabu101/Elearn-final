@@ -1,0 +1,136 @@
+
+{% block content %}
+<style>
+    /* Reset some basic styles */
+body, h2, h5, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Container styling */
+.container {
+    max-width: 800px; /* Set a maximum width for the container */
+    margin: 50px auto; /* Center the container */
+    padding: 20px; /* Padding around the container */
+    background-color: #ffffff; /* White background for content area */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Heading styles */
+h2 {
+    font-size: 2em;
+    color: #343a40; /* Darker text color */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+/* Card styling */
+.card {
+    border: none; /* Remove default card border */
+    border-radius: 8px; /* Rounded corners for the card */
+    overflow: hidden; /* Prevent overflow of card body */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for the card */
+}
+
+/* Card body styling */
+.card-body {
+    padding: 20px; /* Padding inside the card body */
+}
+
+/* Card title styles */
+.card-title {
+    font-size: 1.5em; /* Font size for the card title */
+    color: #007bff; /* Primary color for the title */
+    margin-bottom: 15px; /* Space below the title */
+}
+
+/* Price and discount styling */
+p {
+    font-size: 1.1em; /* Slightly larger font size for paragraph text */
+    margin: 10px 0; /* Space above and below paragraphs */
+}
+
+/* Why Choose This Course section */
+ul {
+    list-style-type: disc; /* Default bullet points for list */
+    margin-left: 20px; /* Indent the list */
+}
+
+form {
+    margin-top: 30px; /* Space above the form */
+}
+
+/* Form group styles */
+.form-group {
+    margin-bottom: 20px; /* Space below form groups */
+}
+
+/* Input and select styling */
+.form-control {
+    border-radius: 5px; /* Rounded corners for inputs */
+    border: 1px solid #ced4da; /* Light border color */
+    padding: 10px; /* Padding inside input fields */
+    width: 100%; /* Full width for inputs */
+}
+
+/* Button styling */
+.btn-success {
+    background-color: #28a745; /* Green background */
+    border: none; /* Remove border */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners for the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+</style>
+<div class="container">
+    <h2>Payment for {{ posts.title }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ posts.title }}</h5>
+             {{ posts.desc }}
+            <p><strong>Price:</strong> ${{ posts.price }}</p>
+            <p><strong>Discount:</strong> {{ posts.discount }}%</p>
+            <p><strong>Old Price:</strong> ${{ posts.old_price }}</p>
+            <p><strong>Why Choose This Course:</strong></p>
+            <ul>
+                {% if posts.why1 %}
+                <li>{{ posts.why1|safe }}</li>
+                {% endif %}
+                {% if posts.why2 %}
+                <li>{{ posts.why2|safe }}</li>
+                {% endif %}
+                {% if posts.why3 %}
+                <li>{{ posts.why3|safe }}</li>
+                {% endif %}
+            </ul>
+
+            <form action="{% url 'payment_page' category_slug=posts.category.slug slug=posts.slug %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <input type="hidden" name="amount" value="{{ post.price }}">
+                <div class="form-group"></div>
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="payment_method">Payment Method:</label>
+                    <select class="form-control" name="payment_method" required>
+                        <option value="UPI">UPI</option>
+                        <option value="Card">Card</option>
+                        <!-- Add more payment methods as necessary -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Confirm Payment </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
