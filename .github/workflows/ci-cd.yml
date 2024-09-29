@@ -31,52 +31,53 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    # Set up Python
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      # Set up Python
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    # Install dependencies
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    # Run tests
-    - name: Run tests
-      run: |
-        python manage.py migrate
-        python manage.py test
+      # Run tests
+      - name: Run tests
+        run: |
+          python manage.py migrate
+          python manage.py test
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Log in to DockerHub
-    - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      # Log in to DockerHub
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    # Build and push Docker image
-    - name: Build and Push Docker image
-      run:
-        # Build the Docker image with the date tag
-        docker build -t arunbabu101/latest.
+      # Build and push Docker image
+      - name: Build and Push Docker image
+        run: |
+          # Build the Docker image with the date tag
+          DATE_TAG=$(date +'%Y%m%d')  # Set the date format as needed
+          docker build -t arunbabu101/edureka:$DATE_TAG .
 
-        # Push the Docker image with the date tag
-        docker push arunbabu101/latest
+          # Push the Docker image with the date tag
+          docker push arunbabu101/edureka:$DATE_TAG
 
-    # Deploy to AWS EC2
-    - name: Deploy to EC2
-      run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@13.60.42.127 << EOF
-          docker pull arunbabu101/edureka:latest
-          docker stop $(docker ps -q --filter ancestor=arunbabu101/edureka:latest)
-          docker run -d -p 8000:8000 arunbabu101/edureka:latest
-        EOF
+      # Deploy to AWS EC2
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@13.60.42.127 << EOF
+            docker pull arunbabu101/edureka:$DATE_TAG
+            docker stop $(docker ps -q --filter ancestor=arunbabu101/edureka:$DATE_TAG)
+            docker run -d -p 8000:8000 arunbabu101/edureka:$DATE_TAG
+          EOF
