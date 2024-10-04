@@ -39,7 +39,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}   # EC2 public IP address stored in GitHub secrets
         username: "ubuntu"
-        key: ${{ secrets.EC2_KEY }}     # SSH private key for EC2 access stored in GitHub secrets
+        key: ${{ secrets.EC2_SSH_KEY }}     # SSH private key for EC2 access stored in GitHub secrets
         script: |
           # Stop and remove any running containers using port 8000
           containers=$(docker ps -q --filter publish=8000)
