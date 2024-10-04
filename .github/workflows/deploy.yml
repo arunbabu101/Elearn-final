@@ -60,5 +60,5 @@ jobs:
           # Run the new container on port 8000
           docker run -d --name edureka -p 8000:8000 arunbabu101/edureka:${{ github.sha }}
 
-          # Clean up unused Docker resources to save space
+          # Clean up unused Docker resources to save spaces
           docker system prune -af
