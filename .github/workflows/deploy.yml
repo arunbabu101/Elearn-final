@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
     # Step 1: Checkout the code from the repository
     - name: Checkout code
@@ -40,17 +41,17 @@ jobs:
         username: "ubuntu"
         key: ${{ secrets.EC2_KEY }}     # SSH private key for EC2 access stored in GitHub secrets
         script: |
-          # Stop and remove containers using port 8000
+          # Stop and remove any running containers using port 8000
           containers=$(docker ps -q --filter publish=8000)
-          if [ ! -z "$containers" ]; then
+          if [ -n "$containers" ]; then
             docker stop $containers
             docker rm $containers
           fi
-          
+
           # Pull the new image from Docker Hub
           docker pull arunbabu101/edureka:${{ github.sha }}
-          
-          # Stop and remove the existing container (if it exists)
+
+          # Stop and remove the existing 'edureka' container if it exists
           if docker ps -a --format '{{.Names}}' | grep -q '^edureka$'; then
             docker stop edureka
             docker rm edureka
@@ -58,6 +59,6 @@ jobs:
 
           # Run the new container on port 8000
           docker run -d --name edureka -p 8000:8000 arunbabu101/edureka:${{ github.sha }}
-          
+
           # Clean up unused Docker resources to save space
           docker system prune -af
