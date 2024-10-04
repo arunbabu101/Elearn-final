@@ -1,0 +1,49 @@
+name: Django CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10.11'
+
+    - name: Generate a unique Docker tag
+      id: tag
+      run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')-$(git rev-parse --short HEAD)"
+      
+    - name: Build Docker image with unique tag
+      run: |
+        docker build -t django-app:${{ steps.tag.outputs.tag }} .
+      
+    - name: Deploy to EC2 via SSH
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+        EC2_USER: ${{ secrets.EC2_USER }}
+        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        IMAGE_TAG: ${{ steps.tag.outputs.tag }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          cd /path/to/your/app
+          # Stop and remove existing container
+          docker-compose down
+          
+          # Update docker-compose.yml with new image tag
+          sed -i 's/image: django-app:.*/image: django-app:${IMAGE_TAG}/' docker-compose.yml
+
+          # Start new container with updated image
+          docker-compose up --build -d
+        EOF
