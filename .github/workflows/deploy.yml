@@ -62,3 +62,10 @@ jobs:
 
           # Clean up unused Docker resources to save spaces
           docker system prune -af
+    # Step 6: Run database migrations
+    - name: Run Django migrations
+      run: docker exec edureka python manage.py migrate
+
+    # Step 7: Collect static files
+    - name: Collect static files
+      run: docker exec edureka python manage.py collectstatic --noinput
