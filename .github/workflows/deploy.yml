@@ -66,10 +66,3 @@ jobs:
     - name: Wait for edureka container to start
       run: sleep 20  # Wait for 10 seconds to ensure the container is fully running
 
-    # Step 6: Run database migrations
-    - name: Run Django migrations
-      run: docker exec edureka python manage.py migrate
-
-    # Step 7: Collect static files
-    - name: Collect static files
-      run: docker exec edureka python manage.py collectstatic --noinput
