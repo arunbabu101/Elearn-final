@@ -10,7 +10,7 @@ class PostForm(forms.ModelForm):
     maincourse = forms.ModelMultipleChoiceField(
             queryset=MainCourse.objects.all(),
             widget=forms.CheckboxSelectMultiple,
-            required=True)
+            )
     
     class Meta:
         model = Post
@@ -23,7 +23,7 @@ class EditPostForm(forms.ModelForm):
     maincourse = forms.ModelMultipleChoiceField(
             queryset=MainCourse.objects.all(),
             widget=forms.CheckboxSelectMultiple,
-            required=True)    
+            )    
     class Meta:
         model = Post
         fields = '__all__'

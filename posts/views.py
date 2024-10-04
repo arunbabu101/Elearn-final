@@ -336,24 +336,55 @@ def change_password(request):
 from datetime import datetime, timedelta
 from django.db.models import Count
 
-def webadmin(request):
-    categories = Category.objects.all()
-    scaling_factor = 10  # Adjust as necessary
-    category_post_counts = []
+from django.shortcuts import render
+from django.db.models import Count
+from django.contrib.auth.models import User
+from .models import Category, Post, Purchase, MainCourse
+from django.utils import timezone
+from datetime import timedelta
 
-    for category in Category.objects.all()[:6]:  # Limit to first 6 categories
-        post_count = category.posts.count()
-        scaled_height = post_count * scaling_factor
-        category_post_counts.append({
-            'category': category.title,
-            'post_count': post_count,
-            'scaled_height': scaled_height,
-        })
+def webadmin(request):
+    # Common Insights
+    user_count = User.objects.count()
+    course_count = Post.objects.count()
+    category_count = Category.objects.count()
+    purchase_count = Purchase.objects.count()
+
+    # Posts by Category
+    categories = Category.objects.annotate(post_count=Count('posts'))
+    category_names = [category.title for category in categories]
+    category_post_counts = [category.post_count for category in categories]
+
+    # User Registrations Over Time
+    today = timezone.now()
+    last_30_days = today - timedelta(days=30)
+    user_registrations = User.objects.filter(date_joined__gte=last_30_days).extra({'date': "date(date_joined)"}).values('date').annotate(count=Count('id')).order_by('date')
+    registration_dates = [reg['date'].strftime('%Y-%m-%d') for reg in user_registrations]
+    registration_counts = [reg['count'] for reg in user_registrations]
+
+    # Course Distribution by Main Course
+    main_courses = MainCourse.objects.annotate(course_count=Count('posts'))
+    main_course_names = [course.title for course in main_courses]
+    main_course_counts = [course.course_count for course in main_courses]
+
+    # Purchase Distribution by Category
+    category_purchases = Category.objects.annotate(purchase_count=Count('posts__purchases'))
+    category_purchase_counts = [category.purchase_count for category in category_purchases]
 
     context = {
+        'user_count': user_count,
+        'course_count': course_count,
+        'category_count': category_count,
+        'purchase_count': purchase_count,
+        'category_names': category_names,
         'category_post_counts': category_post_counts,
-        # other context variables
+        'registration_dates': registration_dates,
+        'registration_counts': registration_counts,
+        'main_course_names': main_course_names,
+        'main_course_counts': main_course_counts,
+        'category_purchase_counts': category_purchase_counts,
     }
+
     return render(request, 'webadmin/index.html', context)
 
 
